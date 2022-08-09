@@ -1,0 +1,35 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 50px;
+
+  img {
+    width: 500px;
+    left: 20px;
+  }
+
+  .formBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 500px;
+    gap: 6px;
+    & > :nth-child(n) {
+      width: 100%;
+    }
+
+    & > button {
+      font-weight: bold;
+      background-color: #188bfa;
+      color: #ffffff;
+      border: none;
+      width: 200px !important;
+      height: 50px;
+      margin-top: 30px;
+    }
+  }
+}
