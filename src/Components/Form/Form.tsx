@@ -48,6 +48,9 @@ export const Form: FC = () => {
             massage: formData.get("message")
         }).then(
             (res) => {
+                if(res.data.status === "success"){
+                    e.currentTarget.reset()
+                }
                 console.log(res.data)
                 setIsFetching(false)
             }
