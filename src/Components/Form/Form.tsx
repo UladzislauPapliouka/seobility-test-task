@@ -40,7 +40,7 @@ export const Form: FC = () => {
         const formData = new FormData(e.currentTarget)
         setIsFetching(true)
 
-        axios.post(`${process.env.REACT_APP_REQUEST_URL}/seobility`, {
+        axios.post(`https://wil-express-server.herokuapp.com//seobility`, {
             name: formData.get("name"),
             email: formData.get("email"),
             phone: formData.get('phone'),
