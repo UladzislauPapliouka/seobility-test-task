@@ -1,9 +1,5 @@
+@import "src/SCSS/mixins";
+
 .input {
-  border-radius: 2px;
-  box-shadow: none;
-  border: 1px solid #e8e8e8;
-  height: 49px;
-  padding: 6px 12px;
-  background: #fbfbfb;
-  outline: none;
+  @include inputMixin
 }

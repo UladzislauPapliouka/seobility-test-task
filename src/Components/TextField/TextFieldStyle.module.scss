@@ -2,4 +2,6 @@
 
 .input {
   @include inputMixin;
+  height: 80px;
+  resize: none;
 }
