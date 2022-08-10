@@ -1,20 +1,57 @@
-import React, {FC} from "react";
+import React, {ChangeEvent, FC, FormEvent, useState} from "react";
 import styles from "./Form.module.scss"
 import {Input} from "../Input/Input";
 import logo from '../../assets/logo.svg'
 import {MaskedInput} from "../MaskedInput/MaskedInput";
 import {TextFiled} from "../TextField/TextFiled";
+import {stringValidation} from "../../utils/validation";
+import {log} from "util";
+
+interface State {
+    nameValid: boolean,
+    emailValid: boolean,
+    messageValid: boolean
+}
 
 export const Form: FC = () => {
+    const [state, setState] = useState<State>({
+        nameValid: true,
+        emailValid: true,
+        messageValid: true,
+    })
+
+    const onNameChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        e.currentTarget.value=e.currentTarget.value.toUpperCase()
+        setState({...state, nameValid: stringValidation(e, /^([A-Z]{3,30}\s[A-Z]{3,30})$/)})
+    }
+    const onEmailChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setState({...state, emailValid: stringValidation(e, /.+@.+\..+/i)})
+    }
+    const onMessageChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        setState({...state, messageValid: stringValidation(e, /^.{10,300}$/)})
+    }
+
+    const sendValidation = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if(!state.messageValid || !state.nameValid || !state.emailValid) {
+            alert("something wrong!")
+            return
+        }
+        const formData = new FormData(e.currentTarget)
+        console.log(formData.get("message"))
+    }
     return (
         <div className={styles.container}>
             <img className={styles.logo} src={logo} alt="logo"/>
-            <form className={styles.formBox}>
-                <Input placeholder={"Ваше имя"}/>
-                <Input placeholder={"E-mail"}/>
-                <MaskedInput mask="+7 (999) 999-99-99"/>
-                <Input type={"date"}/>
-                <TextFiled maxLength={300} minLength={10}/>
+            <form className={styles.formBox} onSubmit={sendValidation}>
+                <Input required placeholder={"Имя фамилия"} name={"name"} onChange={(e) => onNameChangeHandler(e)}/>
+                {!state.nameValid && <span style={{color: "red"}}>invalid value</span>}
+                <Input required formNoValidate placeholder={"E-mail"} name={"email"} onChange={(e) => onEmailChangeHandler(e)}/>
+                {!state.emailValid && <span style={{color: "red"}}>invalid value</span>}
+                <MaskedInput name={"phone"} mask="+7 (999) 999-99-99"/>
+                <Input  required name={"date"} type={"date"}/>
+                <TextFiled  name={"message"} required onChange={(e) => onMessageChangeHandler(e)} maxLength={300}/>
+                {!state.messageValid && <span style={{color: "red"}}>invalid value</span>}
                 <button>SEND</button>
             </form>
         </div>

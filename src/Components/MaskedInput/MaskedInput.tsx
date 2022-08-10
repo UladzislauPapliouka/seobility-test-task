@@ -6,5 +6,5 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
     mask: string | Array<(string | RegExp)>;
 }
 
-export const MaskedInput: FC<Props> = ({mask, ...props}) => <InputMask mask={mask} alwaysShowMask
+export const MaskedInput: FC<Props> = ({mask, ...props}) => <InputMask {...props} mask={mask} alwaysShowMask
                                                                        className={styles.input}/>
