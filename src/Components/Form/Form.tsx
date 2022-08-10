@@ -33,6 +33,7 @@ export const Form: FC = () => {
 
     const sendValidation = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const form = e.currentTarget;
         if (!state.messageValid || !state.nameValid || !state.emailValid) {
             alert("something wrong!")
             return
@@ -48,8 +49,8 @@ export const Form: FC = () => {
             massage: formData.get("message")
         }).then(
             (res) => {
-                if(res.data.status === "success"){
-                    e.currentTarget.reset()
+                if(res.status === 200){
+                    form.reset()
                 }
                 console.log(res.data)
                 setIsFetching(false)
@@ -62,7 +63,7 @@ export const Form: FC = () => {
     return (
         <div className={styles.container}>
             <img className={styles.logo} src={logo} alt="logo"/>
-            <form className={styles.formBox} onSubmit={sendValidation}>
+            <form name={"formSeo"} className={styles.formBox} onSubmit={sendValidation}>
                 <Input required placeholder={"Имя фамилия"} name={"name"} onChange={(e) => onNameChangeHandler(e)}/>
                 {!state.nameValid && <span style={{color: "red"}}>invalid value</span>}
                 <Input required formNoValidate placeholder={"E-mail"} name={"email"}
