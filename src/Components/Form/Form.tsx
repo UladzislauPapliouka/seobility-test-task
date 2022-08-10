@@ -40,7 +40,7 @@ export const Form: FC = () => {
         const formData = new FormData(e.currentTarget)
         setIsFetching(true)
 
-        axios.post(`https://wil-express-server.herokuapp.com//seobility`, {
+        axios.post(`https://wil-express-server.herokuapp.com/seobility`, {
             name: formData.get("name"),
             email: formData.get("email"),
             phone: formData.get('phone'),
@@ -56,7 +56,6 @@ export const Form: FC = () => {
             setIsFetching(false)
         })
     }
-    console.log(process.env)
     return (
         <div className={styles.container}>
             <img className={styles.logo} src={logo} alt="logo"/>
