@@ -5,7 +5,7 @@ import logo from '../../assets/logo.svg'
 import {MaskedInput} from "../MaskedInput/MaskedInput";
 import {TextFiled} from "../TextField/TextFiled";
 import {stringValidation} from "../../utils/validation";
-import {log} from "util";
+import axios from "axios";
 
 interface State {
     nameValid: boolean,
@@ -19,9 +19,9 @@ export const Form: FC = () => {
         emailValid: true,
         messageValid: true,
     })
-
+    const [isFetching, setIsFetching] = useState<boolean>(false)
     const onNameChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        e.currentTarget.value=e.currentTarget.value.toUpperCase()
+        e.currentTarget.value = e.currentTarget.value.toUpperCase()
         setState({...state, nameValid: stringValidation(e, /^([A-Z]{3,30}\s[A-Z]{3,30})$/)})
     }
     const onEmailChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -33,26 +33,44 @@ export const Form: FC = () => {
 
     const sendValidation = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if(!state.messageValid || !state.nameValid || !state.emailValid) {
+        if (!state.messageValid || !state.nameValid || !state.emailValid) {
             alert("something wrong!")
             return
         }
         const formData = new FormData(e.currentTarget)
-        console.log(formData.get("message"))
+        setIsFetching(true)
+
+        axios.post(`${process.env.REACT_APP_REQUEST_URL}/seobility`, {
+            name: formData.get("name"),
+            email: formData.get("email"),
+            phone: formData.get('phone'),
+            date: formData.get("date"),
+            massage: formData.get("message")
+        }).then(
+            (res) => {
+                console.log(res.data)
+                setIsFetching(false)
+            }
+        ).catch(reason => {
+            console.error(reason.response.data)
+            setIsFetching(false)
+        })
     }
+    console.log(process.env)
     return (
         <div className={styles.container}>
             <img className={styles.logo} src={logo} alt="logo"/>
             <form className={styles.formBox} onSubmit={sendValidation}>
                 <Input required placeholder={"Имя фамилия"} name={"name"} onChange={(e) => onNameChangeHandler(e)}/>
                 {!state.nameValid && <span style={{color: "red"}}>invalid value</span>}
-                <Input required formNoValidate placeholder={"E-mail"} name={"email"} onChange={(e) => onEmailChangeHandler(e)}/>
+                <Input required formNoValidate placeholder={"E-mail"} name={"email"}
+                       onChange={(e) => onEmailChangeHandler(e)}/>
                 {!state.emailValid && <span style={{color: "red"}}>invalid value</span>}
                 <MaskedInput name={"phone"} mask="+7 (999) 999-99-99"/>
-                <Input  required name={"date"} type={"date"}/>
-                <TextFiled  name={"message"} required onChange={(e) => onMessageChangeHandler(e)} maxLength={300}/>
+                <Input required name={"date"} type={"date"}/>
+                <TextFiled name={"message"} required onChange={(e) => onMessageChangeHandler(e)} maxLength={300}/>
                 {!state.messageValid && <span style={{color: "red"}}>invalid value</span>}
-                <button>SEND</button>
+                <button disabled={isFetching}>SEND</button>
             </form>
         </div>
     )
